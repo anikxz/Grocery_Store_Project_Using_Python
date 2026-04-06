@@ -37,6 +37,8 @@ def delete_product(connection, product_id):
     cursor.execute(query)
     connection.commit()
 
+    return cursor.lastrowid
+
 
 
 if __name__ == "__main__":
