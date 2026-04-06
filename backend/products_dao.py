@@ -16,7 +16,7 @@ def get_all_products(connection):
             "uom_name": uom_name
         })
 
-    connection.close()
+    cursor.close()
     return response
 
 def insert_new_product(connection, product):

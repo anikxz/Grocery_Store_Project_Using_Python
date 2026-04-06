@@ -15,7 +15,7 @@ def insert_order(connection, order):
     order_details_query = ("INSERT INTO order_details"
                            "(order_id, product_id, quantity, total_price)"
                            "VALUES (%s, %s, %s, %s)")
-    
+
     order_details_data = []
     for order_detail_record in order['order_details']:
         order_details_data.append([
@@ -34,21 +34,19 @@ def insert_order(connection, order):
 def get_order_details(connection, order_id):
     cursor = connection.cursor()
 
-    query = "SELECT * from order_details where order_id = %s"
-
-    query = "SE:ECT order_details.order_id, order_details.quantity, order_details.total_price, "\
+    query = "SELECT order_details.order_id, order_details.quantity, order_details.total_price, "\
             "products.name, products.price_per_unit FROM order_details LEFT JOIN products on " \
-            "order_details.product.id = products.product_id where order_details.order_id = %s"
-    
-    date = (order_id, )
+            "order_details.product_id = products.product_id where order_details.order_id = %s"
+
+    data = (order_id, )
 
     cursor.execute(query, data)
 
     records = []
-    for (order_id, quanity, total_price, product_name, price_per_unit) in cursor:
+    for (order_id, quantity, total_price, product_name, price_per_unit) in cursor:
         records.append({
             'order_id': order_id,
-            'quantity': quanity,
+            'quantity': quantity,
             'total_price': total_price,
             'product_name': product_name,
             'price_per_unit': price_per_unit
@@ -58,7 +56,7 @@ def get_order_details(connection, order_id):
 
     return records
 
-def get_all_orders(conection):
+def get_all_orders(connection):
     cursor = connection.cursor()
     query = ("SELECT * FROM orders")
     cursor.execute(query)
@@ -69,7 +67,7 @@ def get_all_orders(conection):
             'order_id': order_id,
             'customer_name': customer_name,
             'total': total,
-            'datetime': dt
+            'datetime': str(dt)
         })
 
     cursor.close()
@@ -80,8 +78,7 @@ def get_all_orders(conection):
         record['order_details'] = get_order_details(connection, record['order_id'])
 
     return response
+
 if __name__ == '__main__':
         connection = get_sql_connection()
         print(get_all_orders(connection))
-        
-
